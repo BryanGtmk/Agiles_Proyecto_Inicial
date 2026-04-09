@@ -163,3 +163,4 @@ C:\Users\user\Documents\Proyectos de 4to y 5to\Base de Datos\Metodologias Agiles
 C:\Users\user\Documents\Proyectos de 4to y 5to\Base de Datos\Metodologias Agiles\Agiles_Proyecto_Inicial\ProcesosService\obj\Debug\net9.0\ProcesosService.pdb
 C:\Users\user\Documents\Proyectos de 4to y 5to\Base de Datos\Metodologias Agiles\Agiles_Proyecto_Inicial\ProcesosService\obj\Debug\net9.0\ProcesosService.genruntimeconfig.cache
 C:\Users\user\Documents\Proyectos de 4to y 5to\Base de Datos\Metodologias Agiles\Agiles_Proyecto_Inicial\ProcesosService\obj\Debug\net9.0\ref\ProcesosService.dll
+C:\Users\user\Documents\Proyectos de 4to y 5to\Base de Datos\Metodologias Agiles\Agiles_Proyecto_Inicial\ProcesosService\obj\Debug\net9.0\ProcesosService.sourcelink.json

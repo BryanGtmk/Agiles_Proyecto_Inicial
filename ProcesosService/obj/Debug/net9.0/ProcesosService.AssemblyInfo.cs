@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ProcesosService")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+54723e89d4b2620e0e3e1f214be538c9f0275c7a")]
 [assembly: System.Reflection.AssemblyProductAttribute("ProcesosService")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ProcesosService")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -178,6 +178,7 @@ export default function NuevaFacturaPage() {
       }
 
       const cliente = await registrarClienteNatural({
+        tipoPersona: TIPOS_PERSONA.NATURAL,
         tipoIdentificacionFiscal: tipoIdentificacion,
         numeroIdentificacion: numeroIdentificacion.trim(),
         ...naturalForm
@@ -211,6 +212,7 @@ export default function NuevaFacturaPage() {
       }
 
       const cliente = await registrarClienteJuridico({
+        tipoPersona: TIPOS_PERSONA.JURIDICA,
         tipoIdentificacionFiscal: tipoIdentificacion,
         numeroIdentificacion: numeroIdentificacion.trim(),
         ...juridicoForm

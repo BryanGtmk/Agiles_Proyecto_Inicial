@@ -20,19 +20,61 @@ El sistema separa responsabilidades por servicio y usa dos bases de datos difere
 
 ## Arquitectura general
 
-- ClienteService
+- ClientesService
   - Base de datos: FerreteriaClientesDB
   - Funciones: alta, búsqueda y actualización de clientes
 
-- ProcesoService
+- ProcesosService
   - Base de datos: FerreteriaProcesosDB
   - Funciones: productos, facturación, detalle y actualización de stock
 
-- frontend-react
-  - En este repositorio está implementado en la carpeta `frontend`
+- frontend
+  - En este repositorio está implementado en la carpeta frontend
   - Funciones: flujo de nueva factura y consumo de APIs
 
-Regla clave: no existe foreign key física entre bases distintas; `IdCliente` en facturas es una referencia lógica.
+Regla clave: no existe foreign key física entre bases distintas; IdCliente en facturas es una referencia lógica.
+
+## SQL Server con Docker (recomendado)
+
+1. Levantar SQL Server:
+
+```bash
+docker compose up -d
+```
+
+2. Restaurar herramientas .NET:
+
+```bash
+dotnet tool restore
+```
+
+3. Aplicar migraciones:
+
+```bash
+dotnet ef database update --project ClientesService/ClientesService.csproj --startup-project ClientesService/ClientesService.csproj
+dotnet ef database update --project ProcesosService/ProcesosService.csproj --startup-project ProcesosService/ProcesosService.csproj
+```
+
+Si quieres borrar los datos y empezar limpio, ejecuta:
+
+```bash
+docker compose down -v
+docker compose up -d
+```
+
+## Arranque y apagado en un comando
+
+Para levantar todo (Docker SQL + migraciones + 2 APIs + frontend):
+
+```powershell
+./start-all.ps1
+```
+
+Para apagar todo:
+
+```powershell
+./stop-all.ps1
+```
 
 ## Instrucciones para ejecutar ClienteService
 
@@ -82,7 +124,7 @@ dotnet run --project ProcesosService/ProcesosService.csproj
 
 - http://localhost:5002/swagger
 
-## Instrucciones para ejecutar frontend-react
+## Instrucciones para ejecutar frontend
 
 1. Ir a la carpeta del frontend:
 
@@ -96,7 +138,7 @@ cd frontend
 npm install
 ```
 
-3. Crear archivo de entorno (si no existe), tomando como base `frontend/.env.example`.
+3. Crear archivo de entorno (si no existe), tomando como base frontend/.env.example.
 
 4. Levantar en desarrollo:
 
