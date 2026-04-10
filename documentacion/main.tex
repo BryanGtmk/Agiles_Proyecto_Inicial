@@ -1,0 +1,144 @@
+\documentclass[12pt]{article}
+
+% Idioma y codificación
+\usepackage[spanish,es-nodecimaldot]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+
+% Márgenes
+\usepackage[letterpaper,top=2cm,bottom=3cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
+
+% Paquetes útiles
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{multirow}
+\usepackage{xcolor}
+\usepackage{url}
+\usepackage[colorlinks=true, allcolors=blue]{hyperref}
+\usepackage{fancyhdr}
+\usepackage{multicol}
+\usepackage{enumitem}
+\usepackage{caption}
+\usepackage{listings}
+
+\graphicspath{{imagenes/}}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.4em}
+\renewcommand{\arraystretch}{1.2}
+
+% Configuración de listings para código SQL
+\lstset{
+    basicstyle=\ttfamily\footnotesize,
+    breaklines=true,
+    frame=single,
+    showstringspaces=false,
+    columns=fullflexible,
+    tabsize=4
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{70pt}
+
+% Encabezado
+\fancyhead[C]{%
+    \begin{minipage}[c]{2.0cm}
+        \centering
+        \includegraphics[width=2.0cm]{uta.png}
+    \end{minipage}%
+    \hfill
+    \begin{minipage}[c]{8cm}
+        \centering
+        \small \textbf{UNIVERSIDAD TÉCNICA DE AMBATO}\\[0.1cm]
+        \scriptsize \textit{FACULTAD DE INGENIERÍA EN SISTEMAS, ELECTRÓNICA E INDUSTRIAL}\\[0.1cm]
+        \scriptsize \textbf{CARRERA SOFTWARE - METODOLOGIAS AGILES}\\[0.1cm]
+        \scriptsize \textbf{CICLO ACADÉMICO: ENERO 2026 - JULIO 2026}
+    \end{minipage}%
+    \vspace{0.2cm}
+    \hfill
+    \begin{minipage}[c]{2.0cm}
+        \centering
+        \includegraphics[width=2.0cm]{fisei.png}
+    \end{minipage}%
+}
+
+\fancyfoot[C]{\thepage}
+
+\begin{document}
+
+\begin{center}
+    {\large \textbf{INFORME DE GUÍA PRÁCTICA}}\\
+\end{center}
+
+\section{Portada}
+\begin{flushleft}
+\begin{tabular}{>{\bfseries}p{6.2cm} p{8.5cm}}
+Tema: & Proyecto de Facturacion \\
+Unidad de Organización Curricular: & PROFESIONAL \\
+Nivel y Paralelo: & 4to Semestre "B" \\
+Alumno participante: & Guatemal Avilez Bryan Stalin \\
+& Bejarano Masabanda Carlos Fabian \\
+Asignatura: & Metodologias Agiles \\
+Docente: & Ing. NARANJO AVALOS HERNAN FABRICIO Mg. \\
+Modalidad: & Presencial \\
+\end{tabular}
+\end{flushleft}
+
+\section{Informe de guía práctica}
+
+\subsection{Objetivos}
+
+\subsubsection{General}
+Desarrollar un sistema web de facturación para una ferretería, utilizando React, ASP.NET Core, SQL Server y Entity Framework Core, bajo una arquitectura orientada a microservicios con dos bases de datos separadas para clientes y procesos.
+\subsubsection{Específicos}
+\begin{itemize}[leftmargin=1.2cm]
+    \item Transformar los modelos analizados en estructuras físicas de base de datos, definiendo tablas, claves primarias y claves foráneas.
+    \item Ingresar registros de prueba en cada esquema para verificar el funcionamiento de las relaciones establecidas.
+    \item Ejecutar consultas DQL y subconsultas en Oracle para recuperar información y validar la consistencia de los datos almacenados.
+\end{itemize}
+
+\subsection{Instrucciones}
+La actividad consiste en desarrollar la implementación física de varios ejercicios de bases de datos en Oracle. Para ello, primero se construyó la estructura de tablas correspondiente a cada caso, considerando claves primarias, claves foráneas y restricciones básicas de integridad. Después se ingresaron datos de prueba con sentencias \texttt{INSERT INTO}, con el propósito de poblar las tablas y disponer de información suficiente para la validación. Finalmente, se elaboraron consultas DQL y subconsultas orientadas a recuperar datos específicos, comprobar las relaciones entre tablas y evidenciar el correcto funcionamiento del esquema físico propuesto.
+
+
+\subsection{Habilidades blandas empleadas en la tarea}
+\begin{itemize}
+    \item[$\square$] Liderazgo
+    \item[$\square$] Trabajo en equipo
+    \item[$\boxtimes$] Comunicación asertiva
+    \item[$\square$] La empatía
+    \item[$\boxtimes$] Pensamiento crítico
+    \item[$\boxtimes$] Flexibilidad
+    \item[$\square$] La resolución de conflictos
+    \item[$\boxtimes$] Adaptabilidad
+    \item[$\boxtimes$] Responsabilidad
+\end{itemize}
+
+\subsection{Conclusiones}
+El desarrollo de la guía permitió comprender de manera práctica la implementación del modelo físico de una base de datos en Oracle, evidenciando que la creación adecuada de tablas, claves y restricciones constituye la base para el almacenamiento organizado de la información. Asimismo, el ingreso de datos de prueba permitió verificar la validez de las relaciones establecidas y comprobar el funcionamiento de la integridad referencial en los distintos ejercicios.
+
+De igual manera, la ejecución de consultas DQL y subconsultas demostró que una base de datos bien estructurada no solo permite guardar información, sino también recuperarla de forma precisa según diferentes criterios. En consecuencia, la práctica fortaleció la relación entre diseño, implementación y consulta de datos dentro de un entorno real de trabajo con Oracle.
+
+\subsection{Recomendaciones}
+Se recomienda verificar cuidadosamente la coherencia entre el modelo relacional y el modelo físico antes de crear las tablas en Oracle, con el fin de evitar errores en claves, nombres de campos o relaciones entre entidades. También es conveniente ingresar datos de prueba que representen distintos escenarios, ya que ello facilita la comprobación del correcto funcionamiento de las restricciones y relaciones definidas.
+
+Además, se recomienda continuar practicando consultas DQL y subconsultas sobre las bases de datos implementadas, puesto que esta fase permite interpretar la información almacenada y validar de manera más completa el trabajo realizado en la construcción del esquema físico.
+
+\subsection{Referencias}
+\renewcommand{\refname}{}
+\vspace{-2em}
+\nocite{martinez2019,ahijado2023,capacho2017}
+\bibliographystyle{ieeetr}
+\bibliography{sample}
+
+\clearpage
+\subsection{Anexos}
+
+
+
+\end{document}
