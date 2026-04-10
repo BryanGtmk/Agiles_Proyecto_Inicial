@@ -283,6 +283,123 @@ Gestionará productos, facturación y stock.
 \item Mantenibilidad.
 \end{itemize}
 
+\section{SQL Server con Docker (recomendado)}
+
+\subsection*{Levantar SQL Server}
+\begin{verbatim}
+docker compose up -d
+\end{verbatim}
+
+\subsection*{Restaurar herramientas .NET}
+\begin{verbatim}
+dotnet tool restore
+\end{verbatim}
+
+\subsection*{Aplicar migraciones}
+\begin{verbatim}
+dotnet ef database update --project ClientesService/ClientesService.csproj --startup-project ClientesService/ClientesService.csproj
+
+dotnet ef database update --project ProcesosService/ProcesosService.csproj --startup-project ProcesosService/ProcesosService.csproj
+\end{verbatim}
+
+Si deseas borrar los datos y comenzar desde cero:
+
+\begin{verbatim}
+docker compose down -v
+docker compose up -d
+\end{verbatim}
+
+\section{Arranque y apagado en un comando}
+
+\subsection*{Levantar todo}
+\begin{verbatim}
+./start-all.ps1
+\end{verbatim}
+
+\subsection*{Apagar todo}
+\begin{verbatim}
+./stop-all.ps1
+\end{verbatim}
+
+\section{Instrucciones para ejecutar ClientesService}
+
+\subsection*{Restaurar y compilar}
+\begin{verbatim}
+dotnet build ClientesService/ClientesService.csproj
+\end{verbatim}
+
+\subsection*{Ejecutar migraciones}
+\begin{verbatim}
+dotnet ef database update --project ClientesService/ClientesService.csproj --startup-project ClientesService/ClientesService.csproj
+\end{verbatim}
+
+\subsection*{Levantar servicio}
+\begin{verbatim}
+dotnet run --project ClientesService/ClientesService.csproj
+\end{verbatim}
+
+\subsection*{Swagger}
+\begin{verbatim}
+http://localhost:5001/swagger
+\end{verbatim}
+
+\section{Instrucciones para ejecutar ProcesosService}
+
+\subsection*{Restaurar y compilar}
+\begin{verbatim}
+dotnet build ProcesosService/ProcesosService.csproj
+\end{verbatim}
+
+\subsection*{Ejecutar migraciones}
+\begin{verbatim}
+dotnet ef database update --project ProcesosService/ProcesosService.csproj --startup-project ProcesosService/ProcesosService.csproj
+\end{verbatim}
+
+\subsection*{Levantar servicio}
+\begin{verbatim}
+dotnet run --project ProcesosService/ProcesosService.csproj
+\end{verbatim}
+
+\subsection*{Swagger}
+\begin{verbatim}
+http://localhost:5002/swagger
+\end{verbatim}
+
+\section{Instrucciones para ejecutar frontend}
+
+\subsection*{Ir a la carpeta del frontend}
+\begin{verbatim}
+cd frontend
+\end{verbatim}
+
+\subsection*{Instalar dependencias}
+\begin{verbatim}
+npm install
+\end{verbatim}
+
+Crear archivo de entorno basado en \texttt{frontend/.env.example}.
+
+\subsection*{Levantar en desarrollo}
+\begin{verbatim}
+npm run dev
+\end{verbatim}
+
+\subsection*{Build de producción}
+\begin{verbatim}
+npm run build
+\end{verbatim}
+
+\section{Flujo de facturación}
+
+\begin{enumerate}
+\item El usuario abre Nueva Factura y selecciona el tipo de facturación.
+\item Si elige consumidor final, se utiliza automáticamente un cliente genérico del sistema.
+\item Si selecciona facturación con datos del cliente, se busca por tipo y número de identificación; si no existe, se registra.
+\item Se seleccionan los productos y se construye el detalle de la factura.
+\item El backend valida el stock y calcula subtotal, descuento, IVA y total.
+\item Se emite la factura en una transacción: se guarda la cabecera, el detalle y se descuenta el stock.
+\end{enumerate}
+
 \section{Habilidades blandas empleadas en la tarea}
 \begin{itemize}
     \item[$\square$] Liderazgo
