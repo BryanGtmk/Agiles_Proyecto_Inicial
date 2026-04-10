@@ -454,10 +454,11 @@ npm run build
 La presente propuesta plantea una solución ordenada, viable y coherente con los requerimientos del proyecto académico. La separación en microservicios, el uso de dos bases de datos independientes y la implementación con React, ASP.NET Core, SQL Server y Entity Framework Core permiten demostrar conocimientos tanto de desarrollo web como de arquitectura de software.
 Además, la estructura definida para clientes, productos y facturación facilita el manejo de distintos escenarios de venta, manteniendo un diseño de base de datos claro y adaptable. El proyecto, por tanto, no solo responde al requisito técnico planteado, sino que también constituye una propuesta sólida y defendible para su presentación académica.
 
-\subsection{Recomendaciones}
-Se recomienda verificar cuidadosamente la coherencia entre el modelo relacional y el modelo físico antes de crear las tablas en Oracle, con el fin de evitar errores en claves, nombres de campos o relaciones entre entidades. También es conveniente ingresar datos de prueba que representen distintos escenarios, ya que ello facilita la comprobación del correcto funcionamiento de las restricciones y relaciones definidas.
+\section{Recomendaciones}
 
-Además, se recomienda continuar practicando consultas DQL y subconsultas sobre las bases de datos implementadas, puesto que esta fase permite interpretar la información almacenada y validar de manera más completa el trabajo realizado en la construcción del esquema físico.
+El proyecto cuenta con una arquitectura sólida y un uso correcto de tecnologías actuales; no obstante, es recomendable reforzar ciertos aspectos importantes como la seguridad, incorporando autenticación mediante JWT y un manejo centralizado de errores en el backend. Asimismo, se debe priorizar la validación de datos desde el servidor para no depender únicamente del frontend, además de implementar mecanismos de concurrencia que aseguren la integridad del stock cuando existan múltiples operaciones al mismo tiempo.
+
+En cuanto a la base de datos, se aconseja mejorar el rendimiento mediante la creación de índices en campos relevantes y añadir atributos de auditoría que faciliten el control de los registros. De manera general, optimizar la gestión del estado en el frontend, ofrecer mensajes más claros al usuario e incluir funcionalidades adicionales como historial de facturas o reportes básicos contribuirán a fortalecer el sistema, haciéndolo más completo y apropiado para su presentación académica.
 
 \subsection{Referencias}
 \renewcommand{\refname}{}
