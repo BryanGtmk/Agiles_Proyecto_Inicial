@@ -46,6 +46,32 @@ function Wait-ForSqlPort {
     throw "Timeout esperando SQL Server en ${SqlHost}:$Port"
 }
 
+function Invoke-ExternalWithRetry {
+    param(
+        [scriptblock]$Command,
+        [string]$StepName,
+        [int]$MaxAttempts = 5,
+        [int]$DelaySeconds = 3
+    )
+
+    for ($attempt = 1; $attempt -le $MaxAttempts; $attempt++) {
+        Write-Host "[$StepName] Intento $attempt/$MaxAttempts..."
+        & $Command
+
+        if ($LASTEXITCODE -eq 0) {
+            Write-Host "[$StepName] Completado correctamente."
+            return
+        }
+
+        if ($attempt -lt $MaxAttempts) {
+            Write-Host "[$StepName] Fallo transitorio. Reintentando en $DelaySeconds segundos..."
+            Start-Sleep -Seconds $DelaySeconds
+        }
+    }
+
+    throw "[$StepName] Fallo despues de $MaxAttempts intentos."
+}
+
 Write-Host "[0/6] Limpiando procesos previos en puertos 5001, 5002 y 5173..."
 Stop-ProcessByPort -Port 5001
 Stop-ProcessByPort -Port 5002
@@ -68,10 +94,14 @@ Write-Host "[3/6] Restaurando herramientas .NET..."
 dotnet tool restore
 
 Write-Host "[4/6] Aplicando migraciones de ClientesService..."
-dotnet ef database update --project ClientesService/ClientesService.csproj --startup-project ClientesService/ClientesService.csproj
+Invoke-ExternalWithRetry -StepName "Migraciones ClientesService" -Command {
+    dotnet ef database update --project ClientesService/ClientesService.csproj --startup-project ClientesService/ClientesService.csproj
+} -MaxAttempts 6 -DelaySeconds 4
 
 Write-Host "[5/6] Aplicando migraciones de ProcesosService..."
-dotnet ef database update --project ProcesosService/ProcesosService.csproj --startup-project ProcesosService/ProcesosService.csproj
+Invoke-ExternalWithRetry -StepName "Migraciones ProcesosService" -Command {
+    dotnet ef database update --project ProcesosService/ProcesosService.csproj --startup-project ProcesosService/ProcesosService.csproj
+} -MaxAttempts 6 -DelaySeconds 4
 
 Write-Host "[6/6] Abriendo servicios y frontend..."
 Start-Process powershell -ArgumentList @(
