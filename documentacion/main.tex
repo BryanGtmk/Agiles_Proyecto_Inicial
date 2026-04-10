@@ -94,16 +94,25 @@ Modalidad: & Presencial \\
 \subsection{Objetivos}
 
 \subsubsection{General}
-Desarrollar un sistema web de facturación para una ferretería, utilizando React, ASP.NET Core, SQL Server y Entity Framework Core, bajo una arquitectura orientada a microservicios con dos bases de datos separadas para clientes y procesos.
-\subsubsection{Específicos}
-\begin{itemize}[leftmargin=1.2cm]
-    \item Transformar los modelos analizados en estructuras físicas de base de datos, definiendo tablas, claves primarias y claves foráneas.
-    \item Ingresar registros de prueba en cada esquema para verificar el funcionamiento de las relaciones establecidas.
-    \item Ejecutar consultas DQL y subconsultas en Oracle para recuperar información y validar la consistencia de los datos almacenados.
-\end{itemize}
+Desarrollar un sistema web de facturación para una ferretería, utilizando React, ASP.NET Core, SQL Server y Entity Framework Core, 
+bajo una arquitectura orientada a microservicios con dos bases de datos separadas para clientes y procesos.
+
+\section{Objetivos específicos}
+\begin{enumerate}
+\item Diseñar una arquitectura basada en dos microservicios.
+\item Implementar base de datos de clientes.
+\item Implementar base de datos de procesos.
+\item Permitir búsqueda de clientes.
+\item Registrar nuevos clientes.
+\item Construir flujo de facturación.
+\item Actualizar inventario.
+\item Documentar el sistema.
+\end{enumerate}
 
 \subsection{Instrucciones}
-La actividad consiste en desarrollar la implementación física de varios ejercicios de bases de datos en Oracle. Para ello, primero se construyó la estructura de tablas correspondiente a cada caso, considerando claves primarias, claves foráneas y restricciones básicas de integridad. Después se ingresaron datos de prueba con sentencias \texttt{INSERT INTO}, con el propósito de poblar las tablas y disponer de información suficiente para la validación. Finalmente, se elaboraron consultas DQL y subconsultas orientadas a recuperar datos específicos, comprobar las relaciones entre tablas y evidenciar el correcto funcionamiento del esquema físico propuesto.
+El proyecto consiste en el desarrollo de un sistema web orientado a la simulación del proceso de facturación de una ferretería. La aplicación permitirá registrar clientes, consultar su información, gestionar productos, construir una factura a partir de varios ítems y actualizar el stock de inventario una vez emitida la transacción.
+La solución será implementada con una arquitectura orientada a microservicios, utilizando React para el frontend, ASP.NET Core Web API para el backend, SQL Server como sistema gestor de bases de datos y Entity Framework Core como ORM para el acceso y manipulación de los datos. Con el fin de evidenciar el uso de microservicios, la información será dividida en dos bases de datos independientes: una destinada al manejo de clientes y otra al proceso de productos y facturación.
+La propuesta contempla, además, distintos escenarios de identificación del comprador. El sistema permitirá facturar como consumidor final o con datos del cliente, considerando tanto personas naturales como personas jurídicas. La emisión de la factura se realizará en función del tipo de identificación entregado al momento de la compra.
 
 
 \subsection{Habilidades blandas empleadas en la tarea}
