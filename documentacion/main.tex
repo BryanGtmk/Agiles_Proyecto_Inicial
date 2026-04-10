@@ -300,6 +300,163 @@ Gestionará productos, facturación y stock.
 \item Evidencias.
 \end{enumerate}
 
+\section{Uso del sistema}
+Sistema web de facturación con arquitectura de microservicios para gestionar:
+\begin{itemize}
+\item Clientes (naturales, jurídicos y consumidor final)
+\item Productos y stock
+\item Emisión de facturas con cálculo de totales en backend
+\end{itemize}
+
+El sistema separa responsabilidades por servicio y utiliza dos bases de datos diferentes.
+
+\section{Tecnologías usadas}
+\begin{itemize}
+\item Backend: ASP.NET Core Web API (.NET 9, C\#)
+\item Persistencia: Entity Framework Core
+\item Base de datos: SQL Server
+\item Frontend: React + Vite (JavaScript)
+\item Documentación de APIs: Swagger
+\end{itemize}
+
+\section{Arquitectura general}
+
+\subsection{ClientesService}
+\begin{itemize}
+\item Base de datos: FerreteriaClientesDB
+\item Funciones: alta, búsqueda y actualización de clientes
+\end{itemize}
+
+\subsection{ProcesosService}
+\begin{itemize}
+\item Base de datos: FerreteriaProcesosDB
+\item Funciones: productos, facturación, detalle y actualización de stock
+\end{itemize}
+
+\subsection{Frontend}
+Implementado en la carpeta frontend.
+\begin{itemize}
+\item Funciones: flujo de nueva factura y consumo de APIs
+\end{itemize}
+
+\textbf{Regla clave:} no existe foreign key física entre bases distintas; IdCliente en facturas es una referencia lógica.
+
+\section{SQL Server con Docker (recomendado)}
+
+\subsection{Levantar SQL Server}
+\begin{verbatim}
+docker compose up -d
+\end{verbatim}
+
+\subsection{Restaurar herramientas .NET}
+\begin{verbatim}
+dotnet tool restore
+\end{verbatim}
+
+\subsection{Aplicar migraciones}
+\begin{verbatim}
+dotnet ef database update --project ClientesService/ClientesService.csproj --startup-project ClientesService/ClientesService.csproj
+
+dotnet ef database update --project ProcesosService/ProcesosService.csproj --startup-project ProcesosService/ProcesosService.csproj
+\end{verbatim}
+
+\subsection{Reiniciar desde cero}
+\begin{verbatim}
+docker compose down -v
+docker compose up -d
+\end{verbatim}
+
+\section{Arranque y apagado en un comando}
+
+\subsection{Levantar todo}
+\begin{verbatim}
+./start-all.ps1
+\end{verbatim}
+
+\subsection{Apagar todo}
+\begin{verbatim}
+./stop-all.ps1
+\end{verbatim}
+
+\section{Instrucciones para ejecutar ClientesService}
+
+\subsection{Compilar}
+\begin{verbatim}
+dotnet build ClientesService/ClientesService.csproj
+\end{verbatim}
+
+\subsection{Migraciones}
+\begin{verbatim}
+dotnet ef database update --project ClientesService/ClientesService.csproj --startup-project ClientesService/ClientesService.csproj
+\end{verbatim}
+
+\subsection{Ejecutar}
+\begin{verbatim}
+dotnet run --project ClientesService/ClientesService.csproj
+\end{verbatim}
+
+\subsection{Swagger}
+\begin{verbatim}
+http://localhost:5001/swagger
+\end{verbatim}
+
+\section{Instrucciones para ejecutar ProcesosService}
+
+\subsection{Compilar}
+\begin{verbatim}
+dotnet build ProcesosService/ProcesosService.csproj
+\end{verbatim}
+
+\subsection{Migraciones}
+\begin{verbatim}
+dotnet ef database update --project ProcesosService/ProcesosService.csproj --startup-project ProcesosService/ProcesosService.csproj
+\end{verbatim}
+
+\subsection{Ejecutar}
+\begin{verbatim}
+dotnet run --project ProcesosService/ProcesosService.csproj
+\end{verbatim}
+
+\subsection{Swagger}
+\begin{verbatim}
+http://localhost:5002/swagger
+\end{verbatim}
+
+\section{Instrucciones para ejecutar frontend}
+
+\subsection{Ir a la carpeta}
+\begin{verbatim}
+cd frontend
+\end{verbatim}
+
+\subsection{Instalar dependencias}
+\begin{verbatim}
+npm install
+\end{verbatim}
+
+Crear archivo de entorno basado en \texttt{.env.example}.
+
+\subsection{Modo desarrollo}
+\begin{verbatim}
+npm run dev
+\end{verbatim}
+
+\subsection{Build de producción}
+\begin{verbatim}
+npm run build
+\end{verbatim}
+
+\section{Flujo de facturación}
+\begin{enumerate}
+\item El usuario abre Nueva Factura y elige tipo de facturación.
+\item Si selecciona consumidor final, se usa un cliente genérico.
+\item Si selecciona cliente, se busca por identificación o se registra.
+\item Selecciona productos y arma el detalle.
+\item El backend valida stock y calcula subtotal, descuento, IVA y total.
+\item Se emite la factura: guarda cabecera, detalle y descuenta stock.
+\end{enumerate}
+
+
 \subsection{Habilidades blandas empleadas en la tarea}
 \begin{itemize}
     \item[$\square$] Liderazgo
