@@ -29,9 +29,11 @@
 \graphicspath{{imagenes/}}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{0.4em}
+\setlength{\emergencystretch}{3em}
 \renewcommand{\arraystretch}{1.2}
+\sloppy
 
-% Configuración de listings para código SQL
+% Configuración de listings
 \lstset{
     basicstyle=\ttfamily\footnotesize,
     breaklines=true,
@@ -43,7 +45,8 @@
 
 \pagestyle{fancy}
 \fancyhf{}
-\setlength{\headheight}{70pt}
+\setlength{\headheight}{90pt}
+\addtolength{\topmargin}{-15pt}
 
 % Encabezado
 \fancyhead[C]{%
@@ -54,12 +57,11 @@
     \hfill
     \begin{minipage}[c]{8cm}
         \centering
-        \small \textbf{UNIVERSIDAD TÉCNICA DE AMBATO}\\[0.1cm]
-        \scriptsize \textit{FACULTAD DE INGENIERÍA EN SISTEMAS, ELECTRÓNICA E INDUSTRIAL}\\[0.1cm]
-        \scriptsize \textbf{CARRERA SOFTWARE - METODOLOGIAS AGILES}\\[0.1cm]
+        \small \textbf{UNIVERSIDAD TÉCNICA DE AMBATO}\\
+        \scriptsize \textit{FACULTAD DE INGENIERÍA EN SISTEMAS, ELECTRÓNICA E INDUSTRIAL}\\
+        \scriptsize \textbf{CARRERA SOFTWARE - METODOLOGIAS AGILES}\\
         \scriptsize \textbf{CICLO ACADÉMICO: ENERO 2026 - JULIO 2026}
     \end{minipage}%
-    \vspace{0.2cm}
     \hfill
     \begin{minipage}[c]{2.0cm}
         \centering
@@ -97,7 +99,7 @@ Modalidad: & Presencial \\
 Desarrollar un sistema web de facturación para una ferretería, utilizando React, ASP.NET Core, SQL Server y Entity Framework Core, 
 bajo una arquitectura orientada a microservicios con dos bases de datos separadas para clientes y procesos.
 
-\section{Objetivos específicos}
+\subsection{Objetivos específicos}
 \begin{enumerate}
 \item Diseñar una arquitectura basada en dos microservicios.
 \item Implementar base de datos de clientes.
@@ -109,10 +111,12 @@ bajo una arquitectura orientada a microservicios con dos bases de datos separada
 \item Documentar el sistema.
 \end{enumerate}
 
-\subsection{Instrucciones}
+\section{Instrucciones}
 El proyecto consiste en el desarrollo de un sistema web orientado a la simulación del proceso de facturación de una ferretería. La aplicación permitirá registrar clientes, consultar su información, gestionar productos, construir una factura a partir de varios ítems y actualizar el stock de inventario una vez emitida la transacción.
+
 La solución será implementada con una arquitectura orientada a microservicios, utilizando React para el frontend, ASP.NET Core Web API para el backend, SQL Server como sistema gestor de bases de datos y Entity Framework Core como ORM para el acceso y manipulación de los datos. Con el fin de evidenciar el uso de microservicios, la información será dividida en dos bases de datos independientes: una destinada al manejo de clientes y otra al proceso de productos y facturación.
-La propuesta contempla, además, distintos escenarios de identificación del comprador. El sistema permitirá facturar como consumidor final o con datos del cliente, considerando tanto personas naturales como personas jurídicas. La emisión de la factura se realizará en función del tipo de identificación entregado al momento de la compra.
+
+La propuesta contempla, además, distintos escenarios de identificación del comprador. El sistema permitirá facturar como consumidor final o con datos del cliente, considerando tanto personas naturales como personas jurídicas.
 
 \section{Título del proyecto}
 Sistema web de facturación para una ferretería, basado en arquitectura de microservicios, utilizando React, ASP.NET Core, SQL Server y Entity Framework Core.
@@ -150,18 +154,18 @@ No incluirá integración con SRI ni pagos electrónicos.
 
 \section{Arquitectura propuesta}
 
-\subsection{Frontend}
+\subsection*{Frontend}
 Desarrollado en React, permitirá interacción con el usuario.
 
-\subsection{Microservicio de clientes}
+\subsection*{Microservicio de clientes}
 Desarrollado en ASP.NET Core Web API, gestionará clientes.
 
-\subsection{Microservicio de procesos}
+\subsection*{Microservicio de procesos}
 Gestionará productos, facturación y stock.
 
 \section{Bases de datos}
 
-\subsection{FerreteriaClientesDB}
+\subsection*{FerreteriaClientesDB}
 
 \textbf{Tabla Clientes}
 \begin{itemize}
@@ -189,7 +193,7 @@ Gestionará productos, facturación y stock.
 \item RazonSocial
 \end{itemize}
 
-\subsection{FerreteriaProcesosDB}
+\subsection*{FerreteriaProcesosDB}
 
 \textbf{Tabla Productos}
 \begin{itemize}
@@ -279,164 +283,7 @@ Gestionará productos, facturación y stock.
 \item Mantenibilidad.
 \end{itemize}
 
-\section{Uso del sistema}
-Sistema web de facturación con arquitectura de microservicios para gestionar:
-\begin{itemize}
-\item Clientes (naturales, jurídicos y consumidor final)
-\item Productos y stock
-\item Emisión de facturas con cálculo de totales en backend
-\end{itemize}
-
-El sistema separa responsabilidades por servicio y utiliza dos bases de datos diferentes.
-
-\section{Tecnologías usadas}
-\begin{itemize}
-\item Backend: ASP.NET Core Web API (.NET 9, C\#)
-\item Persistencia: Entity Framework Core
-\item Base de datos: SQL Server
-\item Frontend: React + Vite (JavaScript)
-\item Documentación de APIs: Swagger
-\end{itemize}
-
-\section{Arquitectura general}
-
-\subsection{ClientesService}
-\begin{itemize}
-\item Base de datos: FerreteriaClientesDB
-\item Funciones: alta, búsqueda y actualización de clientes
-\end{itemize}
-
-\subsection{ProcesosService}
-\begin{itemize}
-\item Base de datos: FerreteriaProcesosDB
-\item Funciones: productos, facturación, detalle y actualización de stock
-\end{itemize}
-
-\subsection{Frontend}
-Implementado en la carpeta frontend.
-\begin{itemize}
-\item Funciones: flujo de nueva factura y consumo de APIs
-\end{itemize}
-
-\textbf{Regla clave:} no existe foreign key física entre bases distintas; IdCliente en facturas es una referencia lógica.
-
-\section{SQL Server con Docker (recomendado)}
-
-\subsection{Levantar SQL Server}
-\begin{verbatim}
-docker compose up -d
-\end{verbatim}
-
-\subsection{Restaurar herramientas .NET}
-\begin{verbatim}
-dotnet tool restore
-\end{verbatim}
-
-\subsection{Aplicar migraciones}
-\begin{verbatim}
-dotnet ef database update --project ClientesService/ClientesService.csproj --startup-project ClientesService/ClientesService.csproj
-
-dotnet ef database update --project ProcesosService/ProcesosService.csproj --startup-project ProcesosService/ProcesosService.csproj
-\end{verbatim}
-
-\subsection{Reiniciar desde cero}
-\begin{verbatim}
-docker compose down -v
-docker compose up -d
-\end{verbatim}
-
-\section{Arranque y apagado en un comando}
-
-\subsection{Levantar todo}
-\begin{verbatim}
-./start-all.ps1
-\end{verbatim}
-
-\subsection{Apagar todo}
-\begin{verbatim}
-./stop-all.ps1
-\end{verbatim}
-
-\section{Instrucciones para ejecutar ClientesService}
-
-\subsection{Compilar}
-\begin{verbatim}
-dotnet build ClientesService/ClientesService.csproj
-\end{verbatim}
-
-\subsection{Migraciones}
-\begin{verbatim}
-dotnet ef database update --project ClientesService/ClientesService.csproj --startup-project ClientesService/ClientesService.csproj
-\end{verbatim}
-
-\subsection{Ejecutar}
-\begin{verbatim}
-dotnet run --project ClientesService/ClientesService.csproj
-\end{verbatim}
-
-\subsection{Swagger}
-\begin{verbatim}
-http://localhost:5001/swagger
-\end{verbatim}
-
-\section{Instrucciones para ejecutar ProcesosService}
-
-\subsection{Compilar}
-\begin{verbatim}
-dotnet build ProcesosService/ProcesosService.csproj
-\end{verbatim}
-
-\subsection{Migraciones}
-\begin{verbatim}
-dotnet ef database update --project ProcesosService/ProcesosService.csproj --startup-project ProcesosService/ProcesosService.csproj
-\end{verbatim}
-
-\subsection{Ejecutar}
-\begin{verbatim}
-dotnet run --project ProcesosService/ProcesosService.csproj
-\end{verbatim}
-
-\subsection{Swagger}
-\begin{verbatim}
-http://localhost:5002/swagger
-\end{verbatim}
-
-\section{Instrucciones para ejecutar frontend}
-
-\subsection{Ir a la carpeta}
-\begin{verbatim}
-cd frontend
-\end{verbatim}
-
-\subsection{Instalar dependencias}
-\begin{verbatim}
-npm install
-\end{verbatim}
-
-Crear archivo de entorno basado en \texttt{.env.example}.
-
-\subsection{Modo desarrollo}
-\begin{verbatim}
-npm run dev
-\end{verbatim}
-
-\subsection{Build de producción}
-\begin{verbatim}
-npm run build
-\end{verbatim}
-
-\section{Flujo de facturación}
-\begin{enumerate}
-\item El usuario abre Nueva Factura y elige tipo de facturación.
-\item Si selecciona consumidor final, se usa un cliente genérico.
-\item Si selecciona cliente, se busca por identificación o se registra.
-\item Selecciona productos y arma el detalle.
-\item El backend valida stock y calcula subtotal, descuento, IVA y total.
-\item Se emite la factura: guarda cabecera, detalle y descuenta stock.
-\end{enumerate}
-
-
-\subsection{Habilidades blandas empleadas en la tarea}
+\section{Habilidades blandas empleadas en la tarea}
 \begin{itemize}
     \item[$\square$] Liderazgo
     \item[$\square$] Trabajo en equipo
@@ -449,9 +296,10 @@ npm run build
     \item[$\boxtimes$] Responsabilidad
 \end{itemize}
 
-\subsection{Conclusiones}
+\section{Conclusiones}
 
 La presente propuesta plantea una solución ordenada, viable y coherente con los requerimientos del proyecto académico. La separación en microservicios, el uso de dos bases de datos independientes y la implementación con React, ASP.NET Core, SQL Server y Entity Framework Core permiten demostrar conocimientos tanto de desarrollo web como de arquitectura de software.
+
 Además, la estructura definida para clientes, productos y facturación facilita el manejo de distintos escenarios de venta, manteniendo un diseño de base de datos claro y adaptable. El proyecto, por tanto, no solo responde al requisito técnico planteado, sino que también constituye una propuesta sólida y defendible para su presentación académica.
 
 \section{Recomendaciones}
@@ -463,18 +311,17 @@ En cuanto a la base de datos, se aconseja mejorar el rendimiento mediante la cre
 \section{Referencias}
 
 \begin{itemize}
-\item Microsoft. \textit{ASP.NET Core Documentation}. Disponible en: https://learn.microsoft.com/
-\item Microsoft. \textit{Entity Framework Core Documentation}. Disponible en: https://learn.microsoft.com/
-\item Microsoft. \textit{SQL Server Documentation}. Disponible en: https://learn.microsoft.com/
-\item React. \textit{Official Documentation}. Disponible en: https://react.dev/
-\item Vite. \textit{Official Documentation}. Disponible en: https://vitejs.dev/
-\item Docker. \textit{Official Documentation}. Disponible en: https://www.docker.com/
-\item Swagger. \textit{OpenAPI Specification}. Disponible en: https://swagger.io/
+\item Microsoft. \textit{ASP.NET Core Documentation}. Disponible en: \url{https://learn.microsoft.com/}
+\item Microsoft. \textit{Entity Framework Core Documentation}. Disponible en: \url{https://learn.microsoft.com/}
+\item Microsoft. \textit{SQL Server Documentation}. Disponible en: \url{https://learn.microsoft.com/}
+\item React. \textit{Official Documentation}. Disponible en: \url{https://react.dev/}
+\item Vite. \textit{Official Documentation}. Disponible en: \url{https://vitejs.dev/}
+\item Docker. \textit{Official Documentation}. Disponible en: \url{https://www.docker.com/}
+\item Swagger. \textit{OpenAPI Specification}. Disponible en: \url{https://swagger.io/}
 \end{itemize}
 
 \clearpage
-\subsection{Anexos}
 
-
+\section{Anexos}
 
 \end{document}
