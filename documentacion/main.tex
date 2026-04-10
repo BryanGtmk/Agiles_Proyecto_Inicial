@@ -114,6 +114,191 @@ El proyecto consiste en el desarrollo de un sistema web orientado a la simulaci�
 La solución será implementada con una arquitectura orientada a microservicios, utilizando React para el frontend, ASP.NET Core Web API para el backend, SQL Server como sistema gestor de bases de datos y Entity Framework Core como ORM para el acceso y manipulación de los datos. Con el fin de evidenciar el uso de microservicios, la información será dividida en dos bases de datos independientes: una destinada al manejo de clientes y otra al proceso de productos y facturación.
 La propuesta contempla, además, distintos escenarios de identificación del comprador. El sistema permitirá facturar como consumidor final o con datos del cliente, considerando tanto personas naturales como personas jurídicas. La emisión de la factura se realizará en función del tipo de identificación entregado al momento de la compra.
 
+\section{Título del proyecto}
+Sistema web de facturación para una ferretería, basado en arquitectura de microservicios, utilizando React, ASP.NET Core, SQL Server y Entity Framework Core.
+
+\section{Descripción general del proyecto}
+El proyecto consiste en el desarrollo de un sistema web orientado a la simulación del proceso de facturación de una ferretería. La aplicación permitirá registrar clientes, consultar su información, gestionar productos, construir una factura a partir de varios ítems y actualizar el stock de inventario una vez emitida la transacción.
+
+La solución será implementada con una arquitectura orientada a microservicios, utilizando React para el frontend, ASP.NET Core Web API para el backend, SQL Server como sistema gestor de bases de datos y Entity Framework Core como ORM.
+
+La información será dividida en dos bases de datos independientes: una destinada al manejo de clientes y otra al proceso de productos y facturación.
+
+El sistema permitirá facturar como consumidor final o con datos del cliente, considerando tanto personas naturales como jurídicas.
+
+\section{Justificación}
+El desarrollo del sistema responde a la necesidad de aplicar de forma práctica los contenidos estudiados en la asignatura, integrando tecnologías actuales de desarrollo web, arquitectura de software y persistencia de datos.
+
+El uso de microservicios permite separar responsabilidades y mejorar la organización del sistema. Además, Entity Framework Core facilita el trabajo con un enfoque orientado a objetos.
+
+El sistema sigue un flujo claro: identificar cliente, seleccionar productos, validar stock, calcular valores y emitir la factura.
+
+\section{Alcance del proyecto}
+El sistema permitirá:
+\begin{itemize}
+\item Emitir facturas para consumidor final.
+\item Emitir facturas con clientes registrados.
+\item Registrar clientes naturales y jurídicos.
+\item Buscar clientes por identificación.
+\item Registrar productos.
+\item Agregar productos a facturas.
+\item Calcular valores.
+\item Descontar stock.
+\end{itemize}
+
+No incluirá integración con SRI ni pagos electrónicos.
+
+\section{Arquitectura propuesta}
+
+\subsection{Frontend}
+Desarrollado en React, permitirá interacción con el usuario.
+
+\subsection{Microservicio de clientes}
+Desarrollado en ASP.NET Core Web API, gestionará clientes.
+
+\subsection{Microservicio de procesos}
+Gestionará productos, facturación y stock.
+
+\section{Bases de datos}
+
+\subsection{FerreteriaClientesDB}
+
+\textbf{Tabla Clientes}
+\begin{itemize}
+\item IdCliente
+\item TipoPersona
+\item TipoIdentificacionFiscal
+\item NumeroIdentificacion
+\item Correo
+\item Telefono
+\item Direccion
+\item FechaRegistro
+\item Estado
+\end{itemize}
+
+\textbf{Tabla ClientesNaturales}
+\begin{itemize}
+\item IdCliente
+\item Nombres
+\item Apellidos
+\end{itemize}
+
+\textbf{Tabla ClientesJuridicos}
+\begin{itemize}
+\item IdCliente
+\item RazonSocial
+\end{itemize}
+
+\subsection{FerreteriaProcesosDB}
+
+\textbf{Tabla Productos}
+\begin{itemize}
+\item IdProducto
+\item CodigoProducto
+\item Nombre
+\item Marca
+\item Precio
+\item Stock
+\item Activo
+\end{itemize}
+
+\textbf{Tabla ComprasCabecera}
+\begin{itemize}
+\item IdCompra
+\item FechaCompra
+\item NumeroComprobante
+\item IdCliente
+\item Subtotal
+\item Descuento
+\item IVA
+\item Total
+\item Estado
+\end{itemize}
+
+\textbf{Tabla ComprasDetalle}
+\begin{itemize}
+\item IdDetalle
+\item IdCompra
+\item IdProducto
+\item Cantidad
+\item PrecioUnitario
+\item SubtotalLinea
+\end{itemize}
+
+\section{Reglas de negocio}
+\begin{enumerate}
+\item Facturación con cliente o consumidor final.
+\item Cliente puede registrarse si no existe.
+\item Validación de stock obligatoria.
+\item Actualización de inventario al emitir factura.
+\end{enumerate}
+
+\section{Flujo del sistema}
+\begin{enumerate}
+\item Inicio de facturación.
+\item Selección tipo de facturación.
+\item Identificación del cliente.
+\item Búsqueda o registro.
+\item Selección de productos.
+\item Validación y cálculo.
+\item Emisión de factura.
+\end{enumerate}
+
+\section{Escenarios de uso}
+\begin{itemize}
+\item Consumidor final.
+\item Persona natural con cédula.
+\item Persona jurídica con RUC.
+\item Cliente nuevo.
+\item Facturación a terceros.
+\end{itemize}
+
+\section{Módulos}
+\begin{itemize}
+\item Módulo de clientes.
+\item Módulo de productos.
+\item Módulo de facturación.
+\item Módulo de consulta.
+\end{itemize}
+
+\section{Requerimientos funcionales}
+\begin{itemize}
+\item Registrar clientes.
+\item Buscar clientes.
+\item Registrar productos.
+\item Emitir facturas.
+\item Actualizar inventario.
+\end{itemize}
+
+\section{Requerimientos no funcionales}
+\begin{itemize}
+\item Interfaz clara.
+\item Buen rendimiento.
+\item Validación de datos.
+\item Consistencia.
+\item Mantenibilidad.
+\end{itemize}
+
+\section{Tecnologías}
+\begin{itemize}
+\item React
+\item ASP.NET Core
+\item SQL Server
+\item Entity Framework Core
+\item C\#
+\item JavaScript
+\end{itemize}
+
+\section{Entregables}
+\begin{enumerate}
+\item Código fuente frontend.
+\item Microservicio clientes.
+\item Microservicio procesos.
+\item Scripts de BD.
+\item Diagramas.
+\item Documento técnico.
+\item Evidencias.
+\end{enumerate}
 
 \subsection{Habilidades blandas empleadas en la tarea}
 \begin{itemize}
