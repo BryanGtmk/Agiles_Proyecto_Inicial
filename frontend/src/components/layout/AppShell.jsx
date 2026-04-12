@@ -8,7 +8,7 @@ export default function AppShell({ route, onNavigate, sidebarOpen, onToggleSideb
       {sidebarOpen && <button type="button" aria-label="Cerrar menu" className="app-shell-backdrop" onClick={onToggleSidebar} />}
 
       <div className="app-shell-main">
-        <Topbar route={route} onMenuClick={onToggleSidebar} settings={settings} />
+        <Topbar route={route} onMenuClick={onToggleSidebar} />
         <main className="app-content">{children}</main>
       </div>
     </div>

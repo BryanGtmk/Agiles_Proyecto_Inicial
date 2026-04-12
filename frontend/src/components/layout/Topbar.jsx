@@ -1,4 +1,4 @@
-import { Menu, Search } from 'lucide-react';
+import { Menu, Wrench } from 'lucide-react';
 import Button from '../ui/Button';
 
 const titles = {
@@ -10,22 +10,20 @@ const titles = {
   configuracion: 'Configuracion'
 };
 
-export default function Topbar({ route, onMenuClick, settings }) {
+export default function Topbar({ route, onMenuClick }) {
   return (
     <header className="topbar">
       <div className="topbar-title">
         <Button variant="ghost" className="icon-button topbar-menu-button" onClick={onMenuClick} type="button" aria-label="Abrir menu">
           <Menu size={18} />
         </Button>
+        <div className="topbar-brand-mark" aria-hidden="true">
+          <Wrench size={14} />
+        </div>
         <div>
-          <p>Modulo administrativo</p>
+          <p>Panel</p>
           <h1>{titles[route] || 'Dashboard'}</h1>
         </div>
-      </div>
-
-      <div className="topbar-search">
-        <Search size={16} />
-        <span>{settings.nombreNegocio}</span>
       </div>
     </header>
   );

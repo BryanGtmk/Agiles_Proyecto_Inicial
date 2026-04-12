@@ -39,7 +39,7 @@ export default function HistorialPage() {
       </section>
 
       <Card>
-        <SectionHeader eyebrow="Modulo de consulta" title="Historial de facturas" description="Consulta, filtra y revisa las facturas emitidas en la simulacion interna." />
+        <SectionHeader eyebrow="Facturacion" title="Historial de facturas" description="Consulta comprobantes emitidos, aplica filtros y anula cuando corresponda." />
 
         <div className="toolbar-grid toolbar-grid--history">
           <input className="field" placeholder="Buscar por numero de comprobante o cliente" value={search} onChange={(event) => setSearch(event.target.value)} />

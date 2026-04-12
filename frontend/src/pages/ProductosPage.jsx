@@ -34,6 +34,14 @@ export default function ProductosPage() {
       });
   }, [products, search, statusFilter, stockFilter]);
 
+  const productStats = useMemo(() => {
+    return {
+      total: products.length,
+      lowStock: products.filter((product) => isLowStock(product.stock)).length,
+      outOfStock: products.filter((product) => isOutOfStock(product.stock)).length
+    };
+  }, [products]);
+
   function openCreateDialog() {
     setEditingProduct(null);
     setDialogOpen(true);
@@ -58,11 +66,17 @@ export default function ProductosPage() {
 
   return (
     <div className="page-stack">
+      <section className="stats-grid stats-grid--three">
+        <Card className="mini-stat"><span>Total productos</span><strong>{productStats.total}</strong></Card>
+        <Card className="mini-stat"><span>Stock bajo</span><strong>{productStats.lowStock}</strong></Card>
+        <Card className="mini-stat"><span>Sin stock</span><strong>{productStats.outOfStock}</strong></Card>
+      </section>
+
       <Card>
         <SectionHeader
-          eyebrow="Modulo de productos"
+          eyebrow="Inventario"
           title="Gestion de productos"
-          description="Busca, filtra, crea y edita el catalogo con control de stock y estado."
+          description="Administra el catalogo y el estado del stock para facturacion."
           actions={<Button onClick={openCreateDialog}><Plus size={16} />Nuevo producto</Button>}
         />
 

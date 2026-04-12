@@ -1,14 +1,12 @@
-import { Banknote, Boxes, Building2, ClipboardList, LayoutDashboard, Settings2, Users } from 'lucide-react';
-import { formatClientName } from '../../lib/formatters';
-import Button from '../ui/Button';
+import { FileText, History, LayoutDashboard, Package, Settings, Users, Wrench } from 'lucide-react';
 
 const items = [
   { key: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { key: 'clientes', label: 'Clientes', icon: Users },
-  { key: 'productos', label: 'Productos', icon: Boxes },
-  { key: 'nueva-factura', label: 'Nueva Factura', icon: Banknote },
-  { key: 'historial', label: 'Historial', icon: ClipboardList },
-  { key: 'configuracion', label: 'Configuracion', icon: Settings2 }
+  { key: 'productos', label: 'Productos', icon: Package },
+  { key: 'nueva-factura', label: 'Nueva Factura', icon: FileText },
+  { key: 'historial', label: 'Historial', icon: History },
+  { key: 'configuracion', label: 'Configuracion', icon: Settings }
 ];
 
 export default function Sidebar({ open, currentRoute, onNavigate, settings, consumerFinal }) {
@@ -16,11 +14,11 @@ export default function Sidebar({ open, currentRoute, onNavigate, settings, cons
     <aside className={`sidebar ${open ? 'sidebar--open' : ''}`}>
       <div className="sidebar-brand">
         <div className="brand-mark">
-          <Building2 size={20} />
+          <Wrench size={20} />
         </div>
         <div>
           <strong>{settings.nombreNegocio}</strong>
-          <span>Facturacion ferreteria</span>
+          <span>Sistema de facturacion</span>
         </div>
       </div>
 
@@ -45,15 +43,9 @@ export default function Sidebar({ open, currentRoute, onNavigate, settings, cons
       </nav>
 
       <div className="sidebar-card">
-        <p>Consumidor final fijo</p>
-        <strong>{formatClientName(consumerFinal)}</strong>
+        <p>Cliente predeterminado</p>
+        <strong>{consumerFinal.nombre}</strong>
         <span>{consumerFinal.numeroIdentificacion}</span>
-      </div>
-
-      <div className="sidebar-actions">
-        <Button variant="secondary" type="button" onClick={() => onNavigate('nueva-factura')}>
-          Nueva factura
-        </Button>
       </div>
     </aside>
   );

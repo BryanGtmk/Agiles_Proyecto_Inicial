@@ -31,6 +31,18 @@ export default function ClientesPage() {
       });
   }, [clients, search, typeFilter, statusFilter]);
 
+  const clientStats = useMemo(() => {
+    const all = clients.filter((client) => client.tipoCliente !== 'consumidor_final');
+    const active = all.filter((client) => client.estado === 'activo').length;
+    const inactive = all.filter((client) => client.estado === 'inactivo').length;
+
+    return {
+      total: all.length,
+      active,
+      inactive
+    };
+  }, [clients]);
+
   function openCreateDialog() {
     setEditingClient(null);
     setDialogOpen(true);
@@ -85,11 +97,17 @@ export default function ClientesPage() {
 
   return (
     <div className="page-stack">
+      <section className="stats-grid stats-grid--three">
+        <Card className="mini-stat"><span>Total clientes</span><strong>{clientStats.total}</strong></Card>
+        <Card className="mini-stat"><span>Activos</span><strong>{clientStats.active}</strong></Card>
+        <Card className="mini-stat"><span>Inactivos</span><strong>{clientStats.inactive}</strong></Card>
+      </section>
+
       <Card>
         <SectionHeader
-          eyebrow="Modulo de clientes"
+          eyebrow="Clientes"
           title="Gestion de clientes"
-          description="Lista, busca, crea y actualiza clientes sin incluir el consumidor final en el listado principal."
+          description="Consulta, filtra y administra clientes registrados sin incluir consumidor final."
           actions={<Button onClick={openCreateDialog}><Plus size={16} />Nuevo cliente</Button>}
         />
 

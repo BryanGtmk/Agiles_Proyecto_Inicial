@@ -31,9 +31,15 @@ export default function ConfiguracionPage() {
 
   return (
     <div className="page-stack">
+      <section className="stats-grid stats-grid--three">
+        <Card className="mini-stat"><span>IVA actual</span><strong>{Number(form.iva)}%</strong></Card>
+        <Card className="mini-stat"><span>Prefijo activo</span><strong>{form.prefijoFactura}</strong></Card>
+        <Card className="mini-stat"><span>Siguiente comprobante</span><strong>{formatInvoiceNumber(form.prefijoFactura, 126)}</strong></Card>
+      </section>
+
       <section className="dashboard-grid dashboard-grid--two-cols">
         <Card>
-          <SectionHeader eyebrow="Configuracion" title="Parametros del negocio" description="Ajusta datos base, prefijo y IVA sin tocar el flujo de facturacion." />
+          <SectionHeader eyebrow="Negocio" title="Parametros del negocio" description="Ajusta datos base, prefijo e impuestos para la emision." />
           <div className="form-grid form-grid--two-cols">
             <label className="form-grid__full">
               Nombre del negocio
@@ -69,7 +75,7 @@ export default function ConfiguracionPage() {
         </Card>
 
         <Card>
-          <SectionHeader eyebrow="Vista previa" title="Encabezado de factura" description="Esta tarjeta simula como saldra el comprobante." />
+          <SectionHeader eyebrow="Vista previa" title="Encabezado de factura" description="Simulacion del encabezado que se imprime en comprobantes." />
           <div className="invoice-preview invoice-preview--compact">
             <strong>{form.nombreNegocio}</strong>
             <p>RUC: {form.ruc}</p>
@@ -84,6 +90,16 @@ export default function ConfiguracionPage() {
           </div>
         </Card>
       </section>
+
+      <Card>
+        <SectionHeader eyebrow="Operacion" title="Notas de configuracion" description="Recomendaciones para mantener consistencia en la facturacion." />
+        <div className="summary-bullets">
+          <div><span>Prefijo</span><strong>Mantener formato 000-000</strong></div>
+          <div><span>IVA</span><strong>Verificar porcentaje vigente</strong></div>
+          <div><span>RUC</span><strong>Usar el identificador tributario oficial</strong></div>
+          <div><span>Direccion</span><strong>Usar direccion fiscal actualizada</strong></div>
+        </div>
+      </Card>
     </div>
   );
 }
