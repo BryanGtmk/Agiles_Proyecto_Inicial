@@ -437,6 +437,7 @@ export default function NuevaFacturaPage() {
                           <>
                             <option value="cedula">Cedula</option>
                             <option value="pasaporte">Pasaporte</option>
+                            <option value="ruc">RUC</option>
                           </>
                         )}
                       </select>
@@ -478,16 +479,16 @@ export default function NuevaFacturaPage() {
                   )}
 
                   {showInlineRegister && registerDraftForm && (
-                    <div className="summary-block">
-                      <SectionHeader
-                        eyebrow=""
-                        title="Registrar Nuevo Cliente"
-                        description=""
-                        actions={<Button variant="ghost" type="button" onClick={() => setShowInlineRegister(false)}>Cancelar</Button>}
-                      />
+                    <div className="inline-client-form">
+                      <div className="inline-client-form__header">
+                        <h3>Registrar Nuevo Cliente</h3>
+                        <button className="inline-client-form__cancel-link" type="button" onClick={() => setShowInlineRegister(false)}>
+                          Cancelar
+                        </button>
+                      </div>
 
-                      <div className="form-grid form-grid--two-cols">
-                        <label>
+                      <div className="inline-client-form__grid">
+                        <label className="inline-client-form__field inline-client-form__field--compact">
                           Tipo de Cliente
                           <select
                             value={registerDraftForm.tipoCliente}
@@ -504,27 +505,28 @@ export default function NuevaFacturaPage() {
                             <option value="persona_juridica">Persona Juridica</option>
                           </select>
                         </label>
-                        <label />
+
+                        <div className="inline-client-form__spacer" aria-hidden="true" />
 
                         {registerDraftForm.tipoCliente === 'persona_natural' ? (
                           <>
-                            <label>
+                            <label className="inline-client-form__field">
                               Nombres
                               <input value={registerDraftForm.nombre} placeholder="Ingrese nombres" onChange={(event) => updateRegisterField('nombre', event.target.value)} />
                             </label>
-                            <label>
+                            <label className="inline-client-form__field">
                               Apellidos
                               <input value={registerDraftForm.apellidos} placeholder="Ingrese apellidos" onChange={(event) => updateRegisterField('apellidos', event.target.value)} />
                             </label>
                           </>
                         ) : (
-                          <label className="form-grid__full">
+                          <label className="inline-client-form__field inline-client-form__field--full">
                             Razon Social
                             <input value={registerDraftForm.razonSocial} placeholder="Ingrese razon social" onChange={(event) => updateRegisterField('razonSocial', event.target.value)} />
                           </label>
                         )}
 
-                        <label>
+                        <label className="inline-client-form__field inline-client-form__field--compact">
                           Tipo de Identificacion
                           <select value={registerDraftForm.tipoIdentificacion} onChange={(event) => updateRegisterField('tipoIdentificacion', event.target.value)}>
                             {registerDraftForm.tipoCliente === 'persona_juridica' ? (
@@ -533,29 +535,30 @@ export default function NuevaFacturaPage() {
                               <>
                                 <option value="cedula">Cedula</option>
                                 <option value="pasaporte">Pasaporte</option>
+                                <option value="ruc">RUC</option>
                               </>
                             )}
                           </select>
                         </label>
-                        <label>
+                        <label className="inline-client-form__field">
                           Numero de Identificacion
                           <input value={registerDraftForm.numeroIdentificacion} placeholder="Ingrese numero" onChange={(event) => updateRegisterField('numeroIdentificacion', event.target.value)} />
                         </label>
-                        <label className="form-grid__full">
+                        <label className="inline-client-form__field inline-client-form__field--full">
                           Correo Electronico
                           <input value={registerDraftForm.correo} placeholder="correo@ejemplo.com" onChange={(event) => updateRegisterField('correo', event.target.value)} />
                         </label>
-                        <label className="form-grid__full">
+                        <label className="inline-client-form__field inline-client-form__field--full">
                           Telefono
                           <input value={registerDraftForm.telefono} placeholder="Ingrese telefono" onChange={(event) => updateRegisterField('telefono', event.target.value)} />
                         </label>
-                        <label className="form-grid__full">
+                        <label className="inline-client-form__field inline-client-form__field--full">
                           Direccion
                           <input value={registerDraftForm.direccion} placeholder="Ingrese direccion" onChange={(event) => updateRegisterField('direccion', event.target.value)} />
                         </label>
                       </div>
 
-                      <div className="form-actions">
+                      <div className="inline-client-form__actions">
                         <Button variant="secondary" type="button" onClick={() => setShowInlineRegister(false)}>Cancelar</Button>
                         <Button type="button" onClick={handleSaveInlineClient}>Guardar</Button>
                       </div>
