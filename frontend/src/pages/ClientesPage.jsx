@@ -3,7 +3,7 @@ import { Eye, Pencil, Plus, Power } from 'lucide-react';
 import { toast } from 'sonner';
 import { useAppContext } from '../context/AppContext';
 import { formatClientName, formatClientType, formatIdentificationType } from '../lib/formatters';
-import { validateEmail, validateIdentification, validateRuc } from '../lib/validators';
+import { getIdentificationValidationError, validateEmail } from '../lib/validators';
 import Button from '../components/ui/Button';
 import Card from '../components/ui/Card';
 import Badge from '../components/ui/Badge';
@@ -54,6 +54,8 @@ export default function ClientesPage() {
   }
 
   function handleSave(payload) {
+    const tipoIdentificacion = payload.tipoCliente === 'persona_juridica' ? 'ruc' : payload.tipoIdentificacion;
+
     if (!payload.tipoCliente) {
       throw new Error('Seleccione el tipo de cliente.');
     }
@@ -66,11 +68,12 @@ export default function ClientesPage() {
       throw new Error('Ingrese un correo valido.');
     }
 
-    if (payload.tipoCliente === 'persona_juridica') {
-      if (!validateRuc(payload.numeroIdentificacion)) {
-        throw new Error('El RUC debe tener 13 digitos.');
-      }
+    const identificationError = getIdentificationValidationError(tipoIdentificacion, payload.numeroIdentificacion);
+    if (identificationError) {
+      throw new Error(identificationError);
+    }
 
+    if (payload.tipoCliente === 'persona_juridica') {
       if (!payload.razonSocial) {
         throw new Error('La razon social es obligatoria.');
       }
@@ -78,14 +81,11 @@ export default function ClientesPage() {
       if (!payload.nombre || !payload.apellidos) {
         throw new Error('Nombres y apellidos son obligatorios.');
       }
-
-      if (!validateIdentification(payload.tipoIdentificacion, payload.numeroIdentificacion)) {
-        throw new Error('La identificacion ingresada no es valida.');
-      }
     }
 
     addClient({
       ...payload,
+      tipoIdentificacion,
       id: editingClient?.id
     });
 

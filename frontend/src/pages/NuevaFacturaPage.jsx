@@ -18,7 +18,7 @@ import { toast } from 'sonner';
 import { useAppContext } from '../context/AppContext';
 import { calculateSubtotal, clampDiscount } from '../lib/invoiceMath';
 import { formatClientName, formatDate, formatIdentificationType, formatMoney } from '../lib/formatters';
-import { isLowStock, isOutOfStock, validateIdentification } from '../lib/validators';
+import { getIdentificationValidationError, isLowStock, isOutOfStock } from '../lib/validators';
 import Button from '../components/ui/Button';
 import Card from '../components/ui/Card';
 import Badge from '../components/ui/Badge';
@@ -39,6 +39,14 @@ const steps = [
   { number: 4, title: 'Resumen', description: 'Revisar factura' },
   { number: 5, title: 'Confirmar', description: 'Emitir factura' }
 ];
+
+function onlyDigits(value) {
+  return String(value || '').replace(/\D+/g, '');
+}
+
+function toPhoneDigits(value) {
+  return onlyDigits(value).slice(0, 10);
+}
 
 export default function NuevaFacturaPage() {
   const { settings, consumerFinal, products, searchClient, addClient, createInvoice } = useAppContext();
@@ -107,10 +115,12 @@ export default function NuevaFacturaPage() {
   }
 
   function handleSearchClient() {
-    const numero = clientSearch.numeroIdentificacion.trim();
+    const numero = onlyDigits(clientSearch.numeroIdentificacion);
+    const validationError = getIdentificationValidationError(clientSearch.tipoIdentificacion, numero);
 
-    if (!validateIdentification(clientSearch.tipoIdentificacion, numero)) {
-      setMessage('La identificacion ingresada no es valida para el tipo seleccionado.');
+    if (validationError) {
+      setMessage(validationError);
+      toast.error(validationError);
       return;
     }
 
@@ -143,7 +153,7 @@ export default function NuevaFacturaPage() {
     const draft = {
       tipoCliente: registerDraft?.tipoCliente || clientSearch.tipoCliente || 'persona_natural',
       tipoIdentificacion: registerDraft?.tipoIdentificacion || clientSearch.tipoIdentificacion || 'cedula',
-      numeroIdentificacion: registerDraft?.numeroIdentificacion || clientSearch.numeroIdentificacion || '',
+      numeroIdentificacion: onlyDigits(registerDraft?.numeroIdentificacion || clientSearch.numeroIdentificacion || ''),
       nombre: '',
       apellidos: '',
       razonSocial: '',
@@ -156,15 +166,37 @@ export default function NuevaFacturaPage() {
   }
 
   function updateRegisterField(field, value) {
-    setRegisterDraftForm((current) => ({ ...current, [field]: value }));
+    const nextValue = field === 'numeroIdentificacion'
+      ? onlyDigits(value)
+      : field === 'telefono'
+        ? toPhoneDigits(value)
+        : value;
+    setRegisterDraftForm((current) => ({ ...current, [field]: nextValue }));
   }
 
   function handleSaveClient(payload) {
+    const numeroIdentificacion = onlyDigits(payload.numeroIdentificacion);
+    const telefono = toPhoneDigits(payload.telefono);
+    const resolvedIdentificationType = payload.tipoCliente === 'persona_juridica'
+      ? 'ruc'
+      : payload.tipoIdentificacion || registerDraft?.tipoIdentificacion || 'cedula';
+    const validationError = getIdentificationValidationError(resolvedIdentificationType, numeroIdentificacion);
+
+    if (validationError) {
+      throw new Error(validationError);
+    }
+
+    if (telefono.length !== 10) {
+      throw new Error('El telefono debe tener exactamente 10 digitos numericos.');
+    }
+
     const created = addClient({
       ...payload,
+      numeroIdentificacion,
+      telefono,
       id: registerDraft?.id,
       tipoCliente: payload.tipoCliente || registerDraft?.tipoCliente || 'persona_natural',
-      tipoIdentificacion: payload.tipoCliente === 'persona_juridica' ? 'ruc' : payload.tipoIdentificacion || registerDraft?.tipoIdentificacion || 'cedula'
+      tipoIdentificacion: resolvedIdentificationType
     });
 
     setSelectedClient(created);
@@ -182,7 +214,13 @@ export default function NuevaFacturaPage() {
       return;
     }
 
-    handleSaveClient(registerDraftForm);
+    try {
+      handleSaveClient(registerDraftForm);
+    } catch (error) {
+      const detail = error.message || 'No se pudo guardar el cliente.';
+      setMessage(detail);
+      toast.error(detail);
+    }
   }
 
   function addProductToInvoice(product) {
@@ -448,7 +486,9 @@ export default function NuevaFacturaPage() {
                         <input
                           value={clientSearch.numeroIdentificacion}
                           placeholder="Ingrese numero"
-                          onChange={(event) => setClientSearch((current) => ({ ...current, numeroIdentificacion: event.target.value }))}
+                          inputMode="numeric"
+                          pattern="[0-9]*"
+                          onChange={(event) => setClientSearch((current) => ({ ...current, numeroIdentificacion: onlyDigits(event.target.value) }))}
                         />
                         <Button type="button" onClick={handleSearchClient}>
                           <Search size={16} />
@@ -542,7 +582,13 @@ export default function NuevaFacturaPage() {
                         </label>
                         <label className="inline-client-form__field">
                           Numero de Identificacion
-                          <input value={registerDraftForm.numeroIdentificacion} placeholder="Ingrese numero" onChange={(event) => updateRegisterField('numeroIdentificacion', event.target.value)} />
+                          <input
+                            value={registerDraftForm.numeroIdentificacion}
+                            placeholder="Ingrese numero"
+                            inputMode="numeric"
+                            pattern="[0-9]*"
+                            onChange={(event) => updateRegisterField('numeroIdentificacion', event.target.value)}
+                          />
                         </label>
                         <label className="inline-client-form__field inline-client-form__field--full">
                           Correo Electronico
@@ -550,7 +596,14 @@ export default function NuevaFacturaPage() {
                         </label>
                         <label className="inline-client-form__field inline-client-form__field--full">
                           Telefono
-                          <input value={registerDraftForm.telefono} placeholder="Ingrese telefono" onChange={(event) => updateRegisterField('telefono', event.target.value)} />
+                          <input
+                            value={registerDraftForm.telefono}
+                            placeholder="Ingrese telefono"
+                            inputMode="numeric"
+                            pattern="[0-9]*"
+                            maxLength={10}
+                            onChange={(event) => updateRegisterField('telefono', event.target.value)}
+                          />
                         </label>
                         <label className="inline-client-form__field inline-client-form__field--full">
                           Direccion

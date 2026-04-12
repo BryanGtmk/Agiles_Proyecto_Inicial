@@ -2,7 +2,7 @@ import { createContext, useContext, useEffect, useMemo, useReducer } from 'react
 import { buildInitialInvoices, initialClients, initialProducts, initialSettings } from '../lib/mockData';
 import { calculateSubtotal, calculateTotal } from '../lib/invoiceMath';
 import { formatClientName, formatInvoiceNumber } from '../lib/formatters';
-import { isLowStock, normalizeProductCode, validateEmail, validateIdentification, validateRuc } from '../lib/validators';
+import { getIdentificationValidationError, isLowStock, normalizeProductCode, validateEmail, validateRuc } from '../lib/validators';
 
 const STORAGE_KEY = 'ferreteria-admin-state-v1';
 
@@ -156,6 +156,9 @@ export function AppProvider({ children }) {
 
     function addClient(payload) {
       const tipoCliente = payload.tipoCliente;
+      const tipoIdentificacion = tipoCliente === 'persona_juridica'
+        ? 'ruc'
+        : payload.tipoIdentificacion;
       const numeroIdentificacion = String(payload.numeroIdentificacion || '').trim();
       const correo = String(payload.correo || '').trim();
 
@@ -171,12 +174,9 @@ export function AppProvider({ children }) {
         throw new Error('Ingrese un correo valido.');
       }
 
-      if (tipoCliente === 'persona_juridica' && !validateRuc(numeroIdentificacion)) {
-        throw new Error('La persona juridica debe tener un RUC de 13 digitos.');
-      }
-
-      if (tipoCliente !== 'persona_juridica' && !validateIdentification(payload.tipoIdentificacion || 'cedula', numeroIdentificacion)) {
-        throw new Error('La identificacion ingresada no es valida.');
+      const identificationError = getIdentificationValidationError(tipoIdentificacion, numeroIdentificacion);
+      if (identificationError) {
+        throw new Error(identificationError);
       }
 
       const duplicate = state.clients.find((client) => client.numeroIdentificacion === numeroIdentificacion && client.id !== payload.id);
@@ -187,7 +187,7 @@ export function AppProvider({ children }) {
       const client = {
         id: payload.id || uid('cliente'),
         tipoCliente,
-        tipoIdentificacion: payload.tipoIdentificacion,
+        tipoIdentificacion,
         numeroIdentificacion,
         nombre: String(payload.nombre || '').trim(),
         apellidos: String(payload.apellidos || '').trim(),
