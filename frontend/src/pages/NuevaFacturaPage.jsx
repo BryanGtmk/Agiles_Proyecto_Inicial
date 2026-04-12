@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
   AlertCircle,
   ArrowLeft,
@@ -25,6 +25,8 @@ import Badge from '../components/ui/Badge';
 import EmptyState from '../components/ui/EmptyState';
 import SectionHeader from '../components/ui/SectionHeader';
 import Dialog from '../components/ui/Dialog';
+import InvoicePdfPreviewDialog from '../components/forms/InvoicePdfPreviewDialog';
+import { generateInvoicePdfFile } from '../lib/invoicePdf';
 
 const initialSearch = {
   tipoCliente: 'persona_natural',
@@ -64,6 +66,11 @@ export default function NuevaFacturaPage() {
   const [registerDraft, setRegisterDraft] = useState(null);
   const [lastInvoice, setLastInvoice] = useState(null);
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
+  const [pdfStatus, setPdfStatus] = useState('idle');
+  const [pdfError, setPdfError] = useState('');
+  const [pdfBlobUrl, setPdfBlobUrl] = useState('');
+  const [pdfFileName, setPdfFileName] = useState('');
+  const [showPdfPreview, setShowPdfPreview] = useState(false);
 
   const filteredProducts = useMemo(() => {
     return products.filter((product) => {
@@ -79,7 +86,66 @@ export default function NuevaFacturaPage() {
   const flowReady = Boolean(selectedClient) && selectedItems.length > 0;
   const unitsCount = useMemo(() => selectedItems.reduce((sum, item) => sum + Number(item.cantidad || 0), 0), [selectedItems]);
 
+  useEffect(() => {
+    return () => {
+      if (pdfBlobUrl) {
+        URL.revokeObjectURL(pdfBlobUrl);
+      }
+    };
+  }, [pdfBlobUrl]);
+
+  function resetPdfState() {
+    setPdfStatus('idle');
+    setPdfError('');
+    setPdfFileName('');
+    setShowPdfPreview(false);
+    setPdfBlobUrl((current) => {
+      if (current) {
+        URL.revokeObjectURL(current);
+      }
+
+      return '';
+    });
+  }
+
+  async function generateInvoicePdf(invoice, { silent = false, openPreviewOnReady = false } = {}) {
+    if (!invoice) {
+      return;
+    }
+
+    setPdfStatus('generating');
+    setPdfError('');
+
+    try {
+      const { blob, fileName } = await generateInvoicePdfFile({ invoice, settings });
+      const nextUrl = URL.createObjectURL(blob);
+
+      setPdfBlobUrl((current) => {
+        if (current) {
+          URL.revokeObjectURL(current);
+        }
+
+        return nextUrl;
+      });
+      setPdfFileName(fileName);
+      setPdfStatus('ready');
+      if (openPreviewOnReady) {
+        setShowPdfPreview(true);
+      }
+
+      if (!silent) {
+        toast.success('PDF generado correctamente.');
+      }
+    } catch (error) {
+      const detail = error.message || 'No se pudo generar el PDF.';
+      setPdfStatus('error');
+      setPdfError(detail);
+      toast.error(detail);
+    }
+  }
+
   function resetInvoiceState() {
+    resetPdfState();
     setCurrentStep(1);
     setBillingType('consumidor_final');
     setClientSearch(initialSearch);
@@ -317,6 +383,7 @@ export default function NuevaFacturaPage() {
       setCurrentStep(5);
       setMessage(`Factura emitida correctamente: ${invoice.numeroComprobante}.`);
       toast.success(`Factura emitida: ${invoice.numeroComprobante}.`);
+      void generateInvoicePdf(invoice, { silent: true });
     } catch (error) {
       setMessage(error.message || 'No se pudo emitir la factura.');
       toast.error(error.message || 'No se pudo emitir la factura.');
@@ -379,6 +446,72 @@ export default function NuevaFacturaPage() {
     resetInvoiceState();
   }
 
+  function handleViewPdf() {
+    if (!lastInvoice) {
+      return;
+    }
+
+    if (pdfStatus === 'ready' && pdfBlobUrl) {
+      setShowPdfPreview(true);
+      return;
+    }
+
+    setShowPdfPreview(true);
+
+    if (pdfStatus !== 'generating') {
+      void generateInvoicePdf(lastInvoice, { silent: true, openPreviewOnReady: true });
+    }
+  }
+
+  function handleDownloadPdf() {
+    if (!pdfBlobUrl) {
+      return;
+    }
+
+    const downloadLink = document.createElement('a');
+    downloadLink.href = pdfBlobUrl;
+    downloadLink.download = pdfFileName || `${lastInvoice?.numeroComprobante || 'factura'}.pdf`;
+    downloadLink.rel = 'noopener';
+    document.body.append(downloadLink);
+    downloadLink.click();
+    downloadLink.remove();
+  }
+
+  function handleOpenPdfExternal() {
+    if (!pdfBlobUrl) {
+      return;
+    }
+
+    const popup = window.open(pdfBlobUrl, '_blank', 'noopener,noreferrer');
+    if (!popup) {
+      toast.error('No se pudo abrir el PDF en una nueva pestaña.');
+    }
+  }
+
+  function handlePrintPdf() {
+    if (!pdfBlobUrl) {
+      return;
+    }
+
+    const popup = window.open(pdfBlobUrl, '_blank', 'noopener,noreferrer');
+    if (!popup) {
+      toast.error('No se pudo abrir la vista para imprimir.');
+      return;
+    }
+
+    const triggerPrint = () => {
+      try {
+        popup.focus();
+        popup.print();
+      } catch {
+        // Fallback silencioso.
+      }
+    };
+
+    popup.addEventListener('load', triggerPrint, { once: true });
+    setTimeout(triggerPrint, 850);
+  }
+
   return (
     <div className="page-stack">
       <div className="invoice-stepper">
@@ -407,23 +540,31 @@ export default function NuevaFacturaPage() {
         <div className="invoice-layout__left">
           {currentStep === 1 && (
             <Card>
-              <SectionHeader eyebrow="Paso 1" title="Tipo de facturacion" description="Define si la factura se emitira a consumidor final o con datos del cliente." />
-              <div className="radio-grid">
-                <button className={`radio-card invoice-choice ${billingType === 'consumidor_final' ? 'radio-card--active' : ''}`} type="button" onClick={() => handleBillingTypeChange('consumidor_final')}>
-                  <span className="invoice-choice__radio" />
-                  <div>
+              <SectionHeader title="Tipo de Facturación" description="Seleccione el tipo de factura a emitir" />
+              <div className="billing-type-list" role="radiogroup" aria-label="Tipo de facturación">
+                <button
+                  className={`billing-type-option ${billingType === 'consumidor_final' ? 'billing-type-option--active' : ''}`.trim()}
+                  type="button"
+                  onClick={() => handleBillingTypeChange('consumidor_final')}
+                >
+                  <span className="billing-type-option__radio" />
+                  <div className="billing-type-option__content">
                     <strong>Consumidor Final</strong>
-                    <span>Factura sin datos especificos del cliente</span>
+                    <span>Factura sin datos específicos del cliente</span>
                   </div>
-                  <User size={24} />
+                  <User className="billing-type-option__icon" size={26} />
                 </button>
-                <button className={`radio-card invoice-choice ${billingType === 'con_datos' ? 'radio-card--active' : ''}`} type="button" onClick={() => handleBillingTypeChange('con_datos')}>
-                  <span className="invoice-choice__radio" />
-                  <div>
+                <button
+                  className={`billing-type-option ${billingType === 'con_datos' ? 'billing-type-option--active' : ''}`.trim()}
+                  type="button"
+                  onClick={() => handleBillingTypeChange('con_datos')}
+                >
+                  <span className="billing-type-option__radio" />
+                  <div className="billing-type-option__content">
                     <strong>Con Datos del Cliente</strong>
-                    <span>Factura con identificacion del cliente</span>
+                    <span>Factura con identificación del cliente</span>
                   </div>
-                  <Building2 size={24} />
+                  <Building2 className="billing-type-option__icon" size={26} />
                 </button>
               </div>
             </Card>
@@ -818,6 +959,17 @@ export default function NuevaFacturaPage() {
         onClose={closeSuccessDialog}
         footer={(
           <>
+            <Button
+              variant="secondary"
+              type="button"
+              onClick={handleViewPdf}
+              disabled={pdfStatus === 'generating'}
+            >
+              {pdfStatus === 'generating' ? 'Generando PDF...' : 'Ver factura'}
+            </Button>
+            <Button variant="ghost" type="button" onClick={handleDownloadPdf} disabled={pdfStatus !== 'ready'}>
+              Descargar PDF
+            </Button>
             <Button type="button" onClick={closeSuccessDialog}>Nueva factura</Button>
             <Button variant="secondary" type="button" onClick={goToHistory}>Ver historial</Button>
           </>
@@ -863,9 +1015,40 @@ export default function NuevaFacturaPage() {
               <p>{settings.direccion}</p>
               <p>Tel: {settings.telefono}</p>
             </div>
+
+            {pdfStatus === 'generating' && (
+              <div className="inline-message inline-message--info">
+                <span>Generando PDF...</span>
+              </div>
+            )}
+
+            {pdfStatus === 'error' && (
+              <div className="inline-message inline-message--error">
+                <span>{pdfError || 'No se pudo generar el PDF.'}</span>
+              </div>
+            )}
+
+            {pdfStatus === 'ready' && (
+              <div className="inline-message inline-message--success">
+                <span>PDF generado y listo para visualizar o descargar.</span>
+              </div>
+            )}
           </div>
         )}
       </Dialog>
+
+      <InvoicePdfPreviewDialog
+        open={showPdfPreview}
+        onClose={() => setShowPdfPreview(false)}
+        pdfUrl={pdfBlobUrl}
+        fileName={pdfFileName}
+        isLoading={pdfStatus === 'generating'}
+        error={pdfStatus === 'error' ? pdfError : ''}
+        onRetry={() => lastInvoice && generateInvoicePdf(lastInvoice, { openPreviewOnReady: true })}
+        onDownload={handleDownloadPdf}
+        onOpenExternal={handleOpenPdfExternal}
+        onPrint={handlePrintPdf}
+      />
     </div>
   );
 }

@@ -28,4 +28,41 @@ public class FacturasController : ControllerBase
         var factura = await _facturasService.ObtenerPorIdAsync(id, cancellationToken);
         return factura is null ? NotFound(new { message = "Factura no encontrada." }) : Ok(factura);
     }
+
+    [HttpPost("pdf")]
+    [Produces("application/pdf")]
+    public async Task<IActionResult> GenerarPdf([FromBody] FacturaPdfRequestDto request, CancellationToken cancellationToken)
+    {
+        var pdfBytes = await _facturasService.GenerarPdfAsync(request, cancellationToken);
+        var fileName = BuildFileName(request.NumeroComprobante);
+        return File(pdfBytes, "application/pdf", fileName);
+    }
+
+    [HttpGet("{id:int}/pdf")]
+    [Produces("application/pdf")]
+    public async Task<IActionResult> GetPdfById([FromRoute] int id, CancellationToken cancellationToken)
+    {
+        var pdfBytes = await _facturasService.GenerarPdfPorIdAsync(id, cancellationToken);
+        if (pdfBytes is null)
+        {
+            return NotFound(new { message = "Factura no encontrada." });
+        }
+
+        var fileName = $"factura-{id}.pdf";
+        return File(pdfBytes, "application/pdf", fileName);
+    }
+
+    private static string BuildFileName(string numeroComprobante)
+    {
+        var sanitized = string.IsNullOrWhiteSpace(numeroComprobante)
+            ? "factura"
+            : new string(numeroComprobante.Where(ch => char.IsLetterOrDigit(ch) || ch is '-' or '_').ToArray());
+
+        if (string.IsNullOrWhiteSpace(sanitized))
+        {
+            sanitized = "factura";
+        }
+
+        return $"{sanitized}.pdf";
+    }
 }

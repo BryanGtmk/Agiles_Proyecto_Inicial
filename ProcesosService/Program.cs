@@ -1,12 +1,16 @@
 using Microsoft.EntityFrameworkCore;
 using ProcesosService.Api.Middlewares;
 using ProcesosService.Application.Interfaces;
+using ProcesosService.Application.Settings;
 using ProcesosService.Application.Services;
 using ProcesosService.Infrastructure.Persistence;
 using ProcesosService.Infrastructure.Repositories;
+using QuestPDF.Infrastructure;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
+
+QuestPDF.Settings.License = LicenseType.Community;
 
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
@@ -22,6 +26,7 @@ builder.Services.AddScoped<IProductosRepository, ProductosRepository>();
 builder.Services.AddScoped<IFacturasRepository, FacturasRepository>();
 builder.Services.AddScoped<IProductosService, ProductosService>();
 builder.Services.AddScoped<IFacturasService, FacturasService>();
+builder.Services.Configure<FacturaPdfOptions>(builder.Configuration.GetSection("FacturaPdf"));
 
 builder.Services.AddCors(options =>
 {
