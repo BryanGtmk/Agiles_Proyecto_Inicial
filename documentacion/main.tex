@@ -336,24 +336,26 @@ docker compose up -d
 \section{Instrucciones para ejecutar ClientesService}
 
 \subsection*{Restaurar y compilar}
-\begin{verbatim}
+\begin{lstlisting}[language=bash]
 dotnet build ClientesService/ClientesService.csproj
-\end{verbatim}
+\end{lstlisting}
 
 \subsection*{Ejecutar migraciones}
-\begin{verbatim}
-dotnet ef database update --project ClientesService/ClientesService.csproj --startup-project ClientesService/ClientesService.csproj
-\end{verbatim}
+\begin{lstlisting}[language=bash]
+dotnet ef database update \
+  --project ClientesService/ClientesService.csproj \
+  --startup-project ClientesService/ClientesService.csproj
+\end{lstlisting}
 
 \subsection*{Levantar servicio}
-\begin{verbatim}
+\begin{lstlisting}[language=bash]
 dotnet run --project ClientesService/ClientesService.csproj
-\end{verbatim}
+\end{lstlisting}
 
 \subsection*{Swagger}
-\begin{verbatim}
+\begin{lstlisting}[language=bash]
 http://localhost:5001/swagger
-\end{verbatim}
+\end{lstlisting}
 
 \section{Instrucciones para ejecutar ProcesosService}
 
