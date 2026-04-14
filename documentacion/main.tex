@@ -25,6 +25,7 @@
 \usepackage{enumitem}
 \usepackage{caption}
 \usepackage{listings}
+\usepackage{placeins}
 
 \graphicspath{{imagenes/}}
 \setlength{\parindent}{0pt}
@@ -44,8 +45,15 @@
 }
 
 \pagestyle{fancy}
+\makeatletter
+\renewcommand{\headrule}{%
+  \vspace{10pt} % ← ESTE ES EL ESPACIO REAL
+  \hrule width\headwidth height\headrulewidth
+}
+\makeatother
+\setlength{\headsep}{20pt}
 \fancyhf{}
-\setlength{\headheight}{90pt}
+\setlength{\headheight}{100pt}
 \addtolength{\topmargin}{-15pt}
 
 % Encabezado
@@ -60,7 +68,7 @@
         \small \textbf{UNIVERSIDAD TÉCNICA DE AMBATO}\\
         \scriptsize \textit{FACULTAD DE INGENIERÍA EN SISTEMAS, ELECTRÓNICA E INDUSTRIAL}\\
         \scriptsize \textbf{CARRERA SOFTWARE - METODOLOGIAS AGILES}\\
-        \scriptsize \textbf{CICLO ACADÉMICO: ENERO 2026 - JULIO 2026}
+        \scriptsize \textbf{CICLO ACADÉMICO: ENERO 2026 - JULIO 2026}\\[10pt]
     \end{minipage}%
     \hfill
     \begin{minipage}[c]{2.0cm}
@@ -74,24 +82,23 @@
 \begin{document}
 
 \begin{center}
-    {\large \textbf{INFORME DE GUÍA PRÁCTICA}}\\
+    {\large \textbf{INFORME}}\\
 \end{center}
 
 \section{Portada}
 \begin{flushleft}
-\begin{tabular}{>{\bfseries}p{6.2cm} p{8.5cm}}
-Tema: & Proyecto de Facturacion \\
-Unidad de Organización Curricular: & PROFESIONAL \\
-Nivel y Paralelo: & 4to Semestre "B" \\
-Alumno participante: & Guatemal Avilez Bryan Stalin \\
+\begin{tabular}{p{6.2cm} p{8.5cm}}
+\textbf{Tema:} & Proyecto de Facturación \\
+\textbf{Unidad de Organización Curricular:} & PROFESIONAL \\
+\textbf{Nivel y Paralelo:} & 4to Semestre ``B'' \\
+\textbf{Alumno participante:} & Guatemal Avilez Bryan Stalin \\
 & Bejarano Masabanda Carlos Fabian \\
-Asignatura: & Metodologias Agiles \\
-Docente: & Ing. NARANJO AVALOS HERNAN FABRICIO Mg. \\
-Modalidad: & Presencial \\
+\textbf{Asignatura:} & Metodologías Ágiles \\
+\textbf{Docente:} & Ing. Naranjo Avalos Hernan Fabricio Mg. \\
 \end{tabular}
 \end{flushleft}
 
-\section{Informe de guía práctica}
+\section{Informe del proyecto}
 
 \subsection{Objetivos}
 
@@ -296,11 +303,16 @@ dotnet tool restore
 \end{verbatim}
 
 \subsection*{Aplicar migraciones}
-\begin{verbatim}
-dotnet ef database update --project ClientesService/ClientesService.csproj --startup-project ClientesService/ClientesService.csproj
 
-dotnet ef database update --project ProcesosService/ProcesosService.csproj --startup-project ProcesosService/ProcesosService.csproj
-\end{verbatim}
+\begin{lstlisting}[language=bash, caption={Ejecución de migraciones de base de datos}]
+dotnet ef database update \
+  --project ClientesService/ClientesService.csproj \
+  --startup-project ClientesService/ClientesService.csproj
+
+dotnet ef database update \
+  --project ProcesosService/ProcesosService.csproj \
+  --startup-project ProcesosService/ProcesosService.csproj
+\end{lstlisting}
 
 Si deseas borrar los datos y comenzar desde cero:
 
@@ -437,71 +449,87 @@ En cuanto a la base de datos, se aconseja mejorar el rendimiento mediante la cre
 \item Swagger. \textit{OpenAPI Specification}. Disponible en: \url{https://swagger.io/}
 \end{itemize}
 
+\FloatBarrier
 \clearpage
-
 \section{Anexos}
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.7\linewidth]{imagenes/Imagen1.png}
+    \includegraphics[width=0.85\linewidth]{imagenes/Imagen1.png}
     \caption{Pantalla de inicio de la aplicación.}
-    \label{fig:inicio}
+    \label{fig:inicio1}
 \end{figure}
+
+\vspace{0.5cm}
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.7\linewidth]{imagenes/Imagen2.png}
+    \includegraphics[width=0.85\linewidth]{imagenes/Imagen2.png}
     \caption{Vista principal del sistema.}
-    \label{fig:principal}
+    \label{fig:inicio2}
 \end{figure}
+
+\clearpage
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.7\linewidth]{imagenes/Imagen3.png}
+    \includegraphics[width=0.85\linewidth]{imagenes/Imagen3.png}
     \caption{Módulo de gestión de clientes.}
     \label{fig:clientes}
 \end{figure}
 
+\vspace{0.5cm}
+
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.7\linewidth]{imagenes/Imagen4.png}
+    \includegraphics[width=0.85\linewidth]{imagenes/Imagen4.png}
     \caption{Formulario de creación de clientes.}
     \label{fig:crear_cliente}
 \end{figure}
 
+\clearpage
+
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.7\linewidth]{imagenes/Imagen5.png}
+    \includegraphics[width=0.85\linewidth]{imagenes/Imagen5.png}
     \caption{Módulo de gestión de productos.}
     \label{fig:productos}
 \end{figure}
 
+\vspace{0.5cm}
+
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.7\linewidth]{imagenes/Imagen6.png}
+    \includegraphics[width=0.85\linewidth]{imagenes/Imagen6.png}
     \caption{Formulario de creación de productos.}
     \label{fig:crear_producto}
 \end{figure}
 
+\clearpage
+
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.7\linewidth]{imagenes/Imagen7.png}
+    \includegraphics[width=0.85\linewidth]{imagenes/Imagen7.png}
     \caption{Módulo de facturación.}
     \label{fig:factura}
 \end{figure}
 
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.7\linewidth]{imagenes/Imagen8.png}
-    \caption{Historial de facturas generadas.}
-    \label{fig:historial}
-\end{figure}
+\vspace{0.5cm}
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.7\linewidth]{imagenes/Imagen9.png}
+    \includegraphics[width=0.85\linewidth]{imagenes/Imagen8.png}
+    \caption{Historial de facturas.}
+    \label{fig:historial}
+\end{figure}
+
+\vspace{0.5cm}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\linewidth]{imagenes/Imagen9.png}
     \caption{Configuración de la empresa.}
-    \label{fig:configuracion}
+    \label{fig:config}
 \end{figure}
     
 \end{document}
