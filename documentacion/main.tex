@@ -360,24 +360,26 @@ http://localhost:5001/swagger
 \section{Instrucciones para ejecutar ProcesosService}
 
 \subsection*{Restaurar y compilar}
-\begin{verbatim}
+\begin{lstlisting}[language=bash]
 dotnet build ProcesosService/ProcesosService.csproj
-\end{verbatim}
+\end{lstlisting}
 
 \subsection*{Ejecutar migraciones}
-\begin{verbatim}
-dotnet ef database update --project ProcesosService/ProcesosService.csproj --startup-project ProcesosService/ProcesosService.csproj
-\end{verbatim}
+\begin{lstlisting}[language=bash]
+dotnet ef database update \
+  --project ProcesosService/ProcesosService.csproj \
+  --startup-project ProcesosService/ProcesosService.csproj
+\end{lstlisting}
 
 \subsection*{Levantar servicio}
-\begin{verbatim}
+\begin{lstlisting}[language=bash]
 dotnet run --project ProcesosService/ProcesosService.csproj
-\end{verbatim}
+\end{lstlisting}
 
 \subsection*{Swagger}
-\begin{verbatim}
+\begin{lstlisting}[language=bash]
 http://localhost:5002/swagger
-\end{verbatim}
+\end{lstlisting}
 
 \section{Instrucciones para ejecutar frontend}
 
